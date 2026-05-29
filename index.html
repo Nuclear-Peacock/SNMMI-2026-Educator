@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI-Powered Educator — SNMMI 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #08080e;
+  --bg2: #0f0f18;
+  --bg3: #141420;
+  --surface: #1a1a28;
+  --surface2: #21212f;
+  --border: rgba(255,255,255,0.07);
+  --border-gold: rgba(212,168,67,0.28);
+  --gold: #d4a843;
+  --gold-light: #e8c36b;
+  --gold-dim: rgba(212,168,67,0.13);
+  --gold-glow: rgba(212,168,67,0.06);
+  --teal: #2dd4bf;
+  --teal-dim: rgba(45,212,191,0.1);
+  --text: #f4f2ef;
+  --text-muted: #c8c6d8;
+  --text-dim: #8a8998;
+  --radius: 16px;
+  --radius-sm: 9px;
+  --sidebar-w: 252px;
+  --font: 'Sora', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ── SIDEBAR ── */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sidebar-w); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  overflow-y: auto; z-index: 200;
+  display: flex; flex-direction: column;
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+#sidebar::-webkit-scrollbar { width: 3px; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.sb-header {
+  padding: 22px 18px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.sb-badge {
+  display: inline-block;
+  font-family: var(--font);
+  font-size: 8.5px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,168,67,0.18);
+  border-radius: 4px; padding: 3px 8px;
+  margin-bottom: 10px;
+}
+.sb-title {
+  font-family: var(--font);
+  font-size: 12.5px; font-weight: 600;
+  color: var(--text); line-height: 1.4;
+}
+.sb-presenter {
+  font-size: 11px; color: var(--text-muted);
+  margin-top: 4px;
+}
+.sb-presenter a {
+  color: var(--gold); text-decoration: none;
+}
+.sb-presenter a:hover { color: var(--gold-light); }
+
+.sb-nav { padding: 14px 0; flex: 1; }
+.sb-section-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.13em;
+  text-transform: uppercase; color: #7a7988;
+  padding: 10px 18px 4px;
+}
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 18px;
+  font-size: 12.5px; color: #d0cee0;
+  text-decoration: none; cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  border-left: 2px solid transparent;
+}
+.sb-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sb-link.active { color: var(--gold); border-left-color: var(--gold); background: var(--gold-glow); }
+.sb-link .sb-icon { font-size: 13px; flex-shrink: 0; }
+.sb-link .sb-num {
+  margin-left: auto;
+  font-size: 10px; color: var(--text-dim);
+  font-family: var(--font-mono);
+}
+
+.sb-tools {
+  padding: 14px 18px 20px;
+  border-top: 1px solid var(--border);
+}
+.sb-tools-title {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--gold);
+  text-decoration: underline; text-underline-offset: 3px;
+  margin-bottom: 6px;
+}
+.sb-tool-link {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 0;
+  font-size: 12px; color: #d0cee0;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.sb-tool-link:hover { color: var(--gold); }
+.sb-tool-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,168,67,0.3);
+  flex-shrink: 0;
+}
+
+/* ── HAMBURGER ── */
+#menu-btn {
+  display: none;
+  position: fixed; top: 14px; left: 14px; z-index: 300;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; width: 38px; height: 38px;
+  cursor: pointer; align-items: center; justify-content: center;
+  flex-direction: column; gap: 5px; padding: 10px;
+}
+#menu-btn span {
+  display: block; width: 100%; height: 1.5px;
+  background: var(--text-muted); border-radius: 2px;
+  transition: all 0.25s;
+}
+#sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 150;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+}
+
+/* ── MAIN ── */
+#main {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+}
+
+/* ── HERO ── */
+#hero {
+  position: relative;
+  padding: 72px 56px 60px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+#hero::before {
+  content: '';
+  position: absolute; top: -80px; right: -80px;
+  width: 520px; height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,168,67,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+#hero::after {
+  content: '';
+  position: absolute; bottom: -100px; left: 10%;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(45,212,191,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-meta {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 22px;
+}
+.hero-badge {
+  display: inline-block;
+  font-family: var(--font);
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,168,67,0.2);
+  border-radius: 5px; padding: 4px 10px;
+}
+.hero-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-dim); }
+
+.hero-title {
+  font-family: var(--font);
+  font-size: clamp(26px, 3.2vw, 40px);
+  font-weight: 600; line-height: 1.18;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  max-width: 680px;
+  margin-bottom: 10px;
+}
+.hero-title .gold { color: var(--gold); }
+
+.hero-sub {
+  font-size: 15px; color: var(--text-muted);
+  max-width: 580px; margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.hero-presenter {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 32px;
+}
+.presenter-avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: linear-gradient(135deg, #2a2018 0%, #3d2e10 100%);
+  border: 1.5px solid rgba(212,168,67,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  color: var(--gold); flex-shrink: 0;
+}
+.presenter-info { line-height: 1.35; }
+.presenter-name {
+  font-family: var(--font);
+  font-size: 14px; font-weight: 600; color: var(--text);
+}
+.presenter-role {
+  font-size: 12px; color: var(--text-muted);
+  margin-top: 2px;
+}
+.presenter-role a {
+  color: var(--gold); text-decoration: none;
+  font-weight: 500;
+}
+.presenter-role a:hover { color: var(--gold-light); }
+
+.hero-qr-wrap {
+  display: flex; align-items: center; gap: 14px;
+}
+.qr-box {
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.qr-box img { display: block; width: 100px; height: 100px; border-radius: 4px; }
+.qr-label {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gold);
+}
+.hero-timing {
+  font-size: 12px; color: var(--text-muted); line-height: 1.5;
+}
+.hero-timing strong { color: var(--text); font-weight: 500; }
+
+/* ── SECTION ── */
+.section {
+  padding: 56px 56px 48px;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 24px;
+}
+.section:last-child { border-bottom: none; }
+
+.section-header {
+  display: flex; align-items: flex-start; gap: 14px;
+  margin-bottom: 10px;
+}
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,168,67,0.18);
+  border-radius: 5px; padding: 3px 8px;
+  margin-top: 3px; flex-shrink: 0;
+}
+.section-title {
+  font-family: var(--font);
+  font-size: 22px; font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.section-desc {
+  font-size: 13.5px; color: var(--text-muted);
+  margin-bottom: 28px;
+  padding-left: 38px;
+}
+
+/* ── CARD GRID ── */
+.card-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.card-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative; overflow: hidden;
+}
+.card:hover {
+  border-color: rgba(212,168,67,0.22);
+  background: var(--surface2);
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px 16px;
+  cursor: pointer;
+  user-select: none;
+  gap: 10px;
+}
+.card-header-left { flex: 1; min-width: 0; }
+.card-chevron {
+  font-size: 11px; color: var(--text-dim);
+  flex-shrink: 0;
+  transition: transform 0.25s ease, color 0.15s;
+}
+.card.open .card-chevron,
+.workshop-card.open .card-chevron,
+.prompt-example-card.open .card-chevron,
+.tool-group-card.open .card-chevron { transform: rotate(180deg); color: var(--gold); }
+.card-body-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s ease;
+}
+.card.open .card-body-wrap,
+.workshop-card.open .card-body-wrap,
+.prompt-example-card.open .card-body-wrap,
+.tool-group-card.open .card-body-wrap {
+  grid-template-rows: 1fr;
+}
+.card-body-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+.card-body-pad {
+  padding: 0 22px 18px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.card-icon {
+  font-size: 18px; margin-bottom: 8px; display: block;
+}
+.card-title {
+  font-family: var(--font);
+  font-size: 14px; font-weight: 600;
+  color: var(--text); margin-bottom: 0;
+  line-height: 1.3;
+}
+.card-title-sm {
+  font-family: var(--font);
+  font-size: 13px; font-weight: 600;
+  color: var(--text); line-height: 1.3;
+}
+.card-body {
+  font-size: 13px; color: var(--text-muted);
+  line-height: 1.65;
+}
+.card-body ul {
+  list-style: none; padding: 0;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.card-body ul li::before {
+  content: '—';
+  color: var(--gold); margin-right: 7px;
+  font-size: 11px;
+}
+.card-tag {
+  display: inline-block;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--teal);
+  background: var(--teal-dim);
+  border: 1px solid rgba(45,212,191,0.15);
+  border-radius: 4px; padding: 2px 7px;
+  margin-bottom: 10px;
+}
+.card-tag.gold {
+  color: var(--gold); background: var(--gold-dim);
+  border-color: rgba(212,168,67,0.18);
+}
+
+/* ── PROMPT ANATOMY CARD ── */
+.anatomy-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-top: 6px;
+}
+.anatomy-item {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.anatomy-item-key {
+  font-family: var(--font);
+  font-size: 11px; font-weight: 600;
+  color: var(--gold); letter-spacing: 0.06em;
+  text-transform: uppercase; margin-bottom: 3px;
+}
+.anatomy-item-val {
+  font-size: 12px; color: var(--text-muted); line-height: 1.5;
+}
+
+/* ── EXAMPLE PROMPT CARD ── */
+.prompt-example-card {
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius);
+  padding: 0;
+  margin-top: 16px;
+  overflow: hidden;
+}
+.prompt-example-card.open .card-chevron { }
+.prompt-example-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px;
+  cursor: pointer; user-select: none;
+}
+.prompt-example-body-pad {
+  padding: 0 24px 24px;
+}
+.prompt-example-title {
+  font-family: var(--font);
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0;
+}
+.prompt-parts {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.prompt-part {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--bg3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.prompt-part-key {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  color: var(--gold); align-self: start;
+  padding-top: 1px;
+}
+.prompt-part-val {
+  font-size: 13.5px; color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ── WORKSHOP CARDS ── */
+.workshop-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0;
+  transition: border-color 0.2s;
+  overflow: hidden;
+}
+.workshop-card:hover {
+  border-color: var(--border-gold);
+}
+.workshop-card.open .card-chevron { }
+.workshop-header {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 18px 22px 16px;
+  cursor: pointer; user-select: none;
+}
+.workshop-num {
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,168,67,0.2);
+  border-radius: 5px; padding: 3px 8px;
+  flex-shrink: 0; margin-top: 2px;
+}
+.workshop-title {
+  font-family: var(--font);
+  font-size: 15px; font-weight: 600; color: var(--text);
+  line-height: 1.3;
+}
+.workshop-body-pad {
+  padding: 0 24px 24px;
+}
+.workshop-desc {
+  font-size: 13.5px; color: var(--text-muted);
+  line-height: 1.65;
+}
+.workshop-meta {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; margin-bottom: 16px;
+}
+.wm-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--text-muted);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 3px 10px;
+}
+.wm-pill .dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--gold);
+}
+.workshop-footer {
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+}
+.btn-copy {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font);
+  font-size: 12px; font-weight: 600;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,168,67,0.25);
+  border-radius: 8px; padding: 7px 16px;
+  cursor: pointer; transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-copy:hover { background: rgba(212,168,67,0.2); border-color: rgba(212,168,67,0.45); }
+.btn-copy.copied { color: var(--teal); background: var(--teal-dim); border-color: rgba(45,212,191,0.25); }
+.btn-ai {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11.5px; color: var(--text-muted);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 12px;
+  text-decoration: none; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+}
+.btn-ai:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+
+/* ── TOOL CARDS ── */
+.tool-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  display: flex; align-items: flex-start; gap: 13px;
+  text-decoration: none; color: inherit;
+  transition: border-color 0.2s, transform 0.2s, background 0.2s;
+}
+.tool-card:hover {
+  border-color: rgba(212,168,67,0.22);
+  transform: translateY(-2px);
+  background: var(--surface2);
+}
+.tool-icon {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0;
+}
+.tool-icon.purple { background: rgba(139,92,246,0.15); }
+.tool-icon.green  { background: rgba(52,211,153,0.15); }
+.tool-icon.blue   { background: rgba(59,130,246,0.15); }
+.tool-icon.orange { background: rgba(251,146,60,0.15); }
+.tool-icon.teal   { background: rgba(45,212,191,0.15); }
+.tool-icon.rose   { background: rgba(251,113,133,0.15); }
+.tool-icon.amber  { background: var(--gold-dim); }
+.tool-icon.slate  { background: rgba(148,163,184,0.1); }
+.tool-name {
+  font-family: var(--font);
+  font-size: 13.5px; font-weight: 600; color: var(--text);
+  margin-bottom: 3px;
+}
+.tool-desc {
+  font-size: 12px; color: var(--text-muted); line-height: 1.5;
+}
+.tool-arrow {
+  margin-left: auto; font-size: 13px; color: var(--text-dim);
+  align-self: center; flex-shrink: 0;
+}
+
+/* ── HYPE CYCLE VISUAL ── */
+.hype-visual {
+  margin-top: 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px 10px;
+}
+.hype-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 5px 0;
+  font-size: 12.5px; color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+.hype-row:last-child { border-bottom: none; }
+.hype-indicator {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.hype-row strong { color: var(--text); font-weight: 500; }
+
+/* ── FOOTER ── */
+#footer {
+  padding: 40px 56px 48px;
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+}
+.footer-disclaimers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px; margin-bottom: 28px;
+}
+.disclaimer-block {
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.disclaimer-title {
+  font-family: var(--font);
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 7px;
+}
+.disclaimer-text {
+  font-size: 11.5px; color: #c0bece; line-height: 1.65;
+}
+.footer-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-credit {
+  font-size: 12px; color: #9896a8;
+}
+.footer-credit a { color: var(--gold); text-decoration: none; }
+.footer-credit a:hover { color: var(--gold-light); }
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px; background: var(--border);
+  margin: 24px 0;
+}
+
+
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 0px; }
+  #sidebar { transform: translateX(-252px); width: 252px; }
+  #sidebar.open { transform: translateX(0); }
+  #sidebar-overlay.open { display: block; }
+  #menu-btn { display: flex; }
+  #main { margin-left: 0; }
+  #hero, .section, #footer { padding-left: 22px; padding-right: 22px; }
+  #hero { padding-top: 66px; }
+  .anatomy-grid { grid-template-columns: 1fr; }
+  .prompt-part { grid-template-columns: 1fr; gap: 4px; }
+  .prompt-part-key { font-size: 10px; }
+}
+
+/* ── LEARNING OBJECTIVES ── */
+.lo-card {
+  margin-top: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+}
+.lo-header { margin-bottom: 16px; }
+.lo-badge {
+  display: inline-block;
+  font-family: var(--font);
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,168,67,0.2);
+  border-radius: 4px; padding: 3px 9px;
+}
+.lo-list {
+  list-style: none; padding: 0;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.lo-list li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 13.5px; color: var(--text);
+  line-height: 1.55;
+}
+.lo-num {
+  font-family: var(--font-mono);
+  font-size: 10px; font-weight: 500;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid rgba(212,168,67,0.18);
+  border-radius: 4px; padding: 2px 7px;
+  flex-shrink: 0; margin-top: 1px;
+}
+
+/* ── COURSE INVITE ── */
+.course-invite-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.course-invite-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.course-invite-left {
+  padding: 28px 28px 28px 28px;
+  border-right: 1px solid var(--border);
+}
+.course-invite-right {
+  padding: 28px;
+  background: var(--bg3);
+}
+.course-invite-badge {
+  display: inline-block;
+  font-family: var(--font);
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--teal);
+  background: var(--teal-dim);
+  border: 1px solid rgba(45,212,191,0.18);
+  border-radius: 4px; padding: 3px 9px;
+  margin-bottom: 12px;
+}
+.course-invite-title {
+  font-family: var(--font);
+  font-size: 18px; font-weight: 600;
+  color: var(--text); line-height: 1.25;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+.course-invite-desc {
+  font-size: 13px; color: var(--text-muted);
+  line-height: 1.65; margin-bottom: 20px;
+}
+.course-completion-title {
+  font-family: var(--font);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 8px;
+}
+.course-completion-list {
+  list-style: none; padding: 0;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.course-completion-list li {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 12.5px; color: var(--text-muted);
+  line-height: 1.5;
+}
+.course-completion-list li::before {
+  content: '✓';
+  color: var(--teal); font-size: 11px;
+  flex-shrink: 0; margin-top: 1px;
+}
+.course-sessions-label {
+  font-family: var(--font);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 12px;
+}
+.course-session-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px; color: var(--text-muted);
+  line-height: 1.4;
+}
+.course-session-item:last-child { border-bottom: none; }
+.cs-num {
+  font-family: var(--font-mono);
+  font-size: 10px; color: var(--text-dim);
+  flex-shrink: 0; width: 14px; margin-top: 1px;
+}
+.cs-current {
+  display: inline-block;
+  font-size: 9.5px; font-weight: 600;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border-radius: 3px; padding: 1px 5px;
+  margin-left: 4px; vertical-align: middle;
+}
+@media (max-width: 720px) {
+  .course-invite-inner { grid-template-columns: 1fr; }
+  .course-invite-left { border-right: none; border-bottom: 1px solid var(--border); }
+}
+
+/* ── TOOL GROUP CARD ── */
+.tool-group-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.tool-group-card:hover { border-color: rgba(212,168,67,0.22); }
+.tool-group-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px;
+  cursor: pointer; user-select: none;
+  gap: 10px;
+}
+.tool-group-label {
+  font-family: var(--font);
+  font-size: 13px; font-weight: 600;
+  color: var(--text); letter-spacing: 0.01em;
+}
+.tool-group-body {
+  padding: 4px 16px 16px;
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- Sidebar overlay -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- Hamburger -->
+<button id="menu-btn" onclick="toggleSidebar()" aria-label="Open menu">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- ── SIDEBAR ── -->
+<nav id="sidebar">
+  <div class="sb-header">
+    <div class="sb-badge">SNMMI Annual Meeting 2026<br>Educator's Forum Part II</div>
+    <div class="sb-title">AI-Powered Educator</div>
+  </div>
+
+  <div class="sb-nav">
+    <div class="sb-section-label">Session</div>
+    <a class="sb-link" href="#hero" onclick="navTo(event,'hero')">
+      <span class="sb-icon">◈</span> Overview
+    </a>
+
+    <div class="sb-section-label">Sections</div>
+    <a class="sb-link" href="#s1" onclick="navTo(event,'s1')">
+      <span class="sb-icon">◉</span> Why This Matters
+    </a>
+    <a class="sb-link" href="#s2" onclick="navTo(event,'s2')">
+      <span class="sb-icon">◉</span> Anatomy of a Prompt
+    </a>
+    <a class="sb-link" href="#s3" onclick="navTo(event,'s3')">
+      <span class="sb-icon">◉</span> Prompt Techniques
+    </a>
+    <a class="sb-link" href="#s4" onclick="navTo(event,'s4')">
+      <span class="sb-icon">◉</span> Workshop: Do &amp; Discuss
+    </a>
+    <a class="sb-link" href="#s5" onclick="navTo(event,'s5')">
+      <span class="sb-icon">◉</span> AI Tool Ecosystem: Go Play!
+    </a>
+
+    <div class="sb-section-label">More</div>
+    <a class="sb-link" href="#footer" onclick="navTo(event,'footer')">
+      <span class="sb-icon">○</span> Disclaimers
+    </a>
+  </div>
+
+  <div class="sb-tools">
+    <div class="sb-tools-title">AI Language Models</div>
+    <a class="sb-tool-link" href="https://chatgpt.com" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> ChatGPT
+    </a>
+    <a class="sb-tool-link" href="https://claude.ai" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> Claude
+    </a>
+    <a class="sb-tool-link" href="https://gemini.google.com" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> Gemini
+    </a>
+    <a class="sb-tool-link" href="https://copilot.microsoft.com" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> Copilot
+    </a>
+
+    <div class="sb-tools-title" style="margin-top:10px;">Evidence-Based Research</div>
+    <a class="sb-tool-link" href="https://www.openevidence.com" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> OpenEvidence
+    </a>
+    <a class="sb-tool-link" href="https://www.perplexity.ai" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> Perplexity
+    </a>
+    <a class="sb-tool-link" href="https://consensus.app" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> Consensus
+    </a>
+    <a class="sb-tool-link" href="https://pubmed.ncbi.nlm.nih.gov" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> PubMed
+    </a>
+
+    <div class="sb-tools-title" style="margin-top:10px;">Artifact Generation</div>
+    <a class="sb-tool-link" href="https://notebooklm.google.com" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> NotebookLM
+    </a>
+
+    <div class="sb-tools-title" style="margin-top:10px;">Image &amp; Video AI</div>
+    <a class="sb-tool-link" href="https://deepmind.google/technologies/veo/" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> Google Veo
+    </a>
+    <a class="sb-tool-link" href="https://deepmind.google/technologies/imagen-3/" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> Google Imagen
+    </a>
+    <a class="sb-tool-link" href="https://klingai.com" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> Kling AI
+    </a>
+    <a class="sb-tool-link" href="https://dream-machine.lumalabs.ai/" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> Luma Dream Machine
+    </a>
+    <a class="sb-tool-link" href="https://openai.com/dall-e-3" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> DALL-E 3
+    </a>
+    <a class="sb-tool-link" href="https://runwayml.com" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> Runway ML
+    </a>
+    <a class="sb-tool-link" href="https://www.midjourney.com" target="_blank" rel="noopener">
+      <span class="sb-tool-dot"></span> Midjourney
+    </a>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main id="main">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-meta">
+      <span class="hero-badge">SNMMI Annual Meeting 2026 · Educator's Forum Part II</span>
+    </div>
+
+    <h1 class="hero-title">
+      The <span class="gold">AI-Powered Educator</span><br>
+      Leveraging Grounded AI for Nuclear Medicine Training
+    </h1>
+    <p class="hero-sub">
+      A hands-on workshop tailored for nuclear medicine technologist educators on using generative AI responsibly across curriculum design, clinical assessment, multimedia generation, and administrative workflows.
+    </p>
+
+    <div class="hero-presenter">
+      <div class="presenter-avatar">JP</div>
+      <div class="presenter-info">
+        <div class="presenter-name">Lt Col Justin G. Peacock, MD, PhD, MHPE</div>
+        <div class="presenter-role">
+          Associate Dean for Research · Assistant Professor of Radiology &amp; Bioengineering<br>
+          Uniformed Services University School of Medicine ·
+          <a href="https://www.linkedin.com/in/jpeacock/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-qr-wrap">
+      <div class="qr-box">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&color=d4a843&bgcolor=0a0a14&data=https://snmmi-educator.netlify.app/" alt="QR code linking to this webapp" />
+        <span class="qr-label">This WebApp</span>
+      </div>
+      <div class="hero-timing">
+        Scan QR code to follow along on your device.<br>
+        All prompts can be copied directly from this page.
+      </div>
+    </div>
+
+    <!-- Learning Objectives -->
+    <div class="lo-card reveal">
+      <div class="lo-header">
+        <span class="lo-badge">Learning Objectives</span>
+      </div>
+      <ol class="lo-list">
+        <li>
+          <span class="lo-num">01</span>
+          <span>Analyze ethical safeguards for responsible AI integration in nuclear medicine training.</span>
+        </li>
+        <li>
+          <span class="lo-num">02</span>
+          <span>Construct advanced prompts to streamline specialized technologist education materials.</span>
+        </li>
+        <li>
+          <span class="lo-num">03</span>
+          <span>Create AI-driven educational multimedia to engage technologist students.</span>
+        </li>
+        <li>
+          <span class="lo-num">04</span>
+          <span>Build grounded AI platforms for source-verified technologist certification content.</span>
+        </li>
+      </ol>
+    </div>
+
+  </section>
+
+  <!-- ── SECTION 1: WHY THIS MATTERS ── -->
+  <section class="section" id="s1">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Why This Matters</h2>
+    </div>
+    <p class="section-desc reveal">AI is actively reshaping nuclear medicine education for technologists. Understanding where we are on the curve — and where the hype ends — is the foundation of effective integration into your curriculum.</p>
+
+
+    <div class="card-grid reveal">
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="card-header-left">
+            <div class="card-tag" style="margin-bottom:6px;">Context</div>
+            <div class="card-title">The Gartner Hype Cycle</div>
+          </div>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="card-body-pad">
+            <div class="card-body">
+              <svg viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg" style="width:100%;margin-top:4px;display:block;">
+                <line x1="32" y1="8" x2="32" y2="148" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                <line x1="32" y1="148" x2="312" y2="148" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                <path d="M32,146 C54,146 66,128 82,58 C90,24 98,12 106,12 C114,12 120,24 128,70 C136,114 144,134 162,136 C180,138 192,122 214,112 C236,102 254,94 312,82" fill="none" stroke="#d4a843" stroke-width="2" stroke-linecap="round"/>
+                <rect x="76" y="1" width="60" height="17" rx="2" fill="#1a1a28"/>
+                <text x="106" y="9" fill="rgba(212,168,67,0.95)" font-size="7.5" font-family="DM Sans,sans-serif" text-anchor="middle" font-weight="600">Peak of Inflated</text>
+                <text x="106" y="17" fill="rgba(212,168,67,0.95)" font-size="7.5" font-family="DM Sans,sans-serif" text-anchor="middle" font-weight="600">Expectations</text>
+                <rect x="4" y="152" width="56" height="17" rx="2" fill="#1a1a28"/>
+                <text x="32" y="160" fill="rgba(138,137,152,0.85)" font-size="7.5" font-family="DM Sans,sans-serif" text-anchor="middle">Innovation</text>
+                <text x="32" y="168" fill="rgba(138,137,152,0.85)" font-size="7.5" font-family="DM Sans,sans-serif" text-anchor="middle">Trigger</text>
+                <rect x="134" y="152" width="56" height="17" rx="2" fill="#1a1a28"/>
+                <text x="162" y="160" fill="rgba(138,137,152,0.85)" font-size="7.5" font-family="DM Sans,sans-serif" text-anchor="middle">Trough of</text>
+                <text x="162" y="168" fill="rgba(138,137,152,0.85)" font-size="7.5" font-family="DM Sans,sans-serif" text-anchor="middle">Disillusionment</text>
+                <rect x="186" y="152" width="60" height="17" rx="2" fill="#1a1a28"/>
+                <text x="216" y="160" fill="rgba(138,137,152,0.85)" font-size="7.5" font-family="DM Sans,sans-serif" text-anchor="middle">Slope of</text>
+                <text x="216" y="168" fill="rgba(138,137,152,0.85)" font-size="7.5" font-family="DM Sans,sans-serif" text-anchor="middle">Enlightenment</text>
+                <rect x="268" y="152" width="48" height="17" rx="2" fill="#1a1a28"/>
+                <text x="292" y="160" fill="rgba(138,137,152,0.85)" font-size="7.5" font-family="DM Sans,sans-serif" text-anchor="middle">Plateau of</text>
+                <text x="292" y="168" fill="rgba(138,137,152,0.85)" font-size="7.5" font-family="DM Sans,sans-serif" text-anchor="middle">Productivity</text>
+              </svg>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="card-header-left">
+            <div class="card-tag" style="margin-bottom:6px;">Applications</div>
+            <div class="card-title">Four Domains of AI Use in Nuclear Medicine Technologist Training</div>
+          </div>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="card-body-pad">
+            <div class="card-body">
+              <ul>
+                <li><strong>Clinical</strong> — Patient communication simulations, imaging artifact analysis, positioning guides, and competency checklists</li>
+                <li><strong>Educational</strong> — Drafting syllabi, board prep (NMTCB/ARRT) modules, quiz generation, and explainer animations</li>
+                <li><strong>Research</strong> — Synthesizing literature for student projects, designing data collection workflows, and abstract drafting</li>
+                <li><strong>Administrative</strong> — Streamlining JRCNMT accreditation documents, creating grading rubrics, and drafting student recommendations</li>
+              </ul>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="card-header-left">
+            <div class="card-tag gold" style="margin-bottom:6px;">Ethics</div>
+            <div class="card-title">The Challenge of Accuracy &amp; Safeguards</div>
+          </div>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="card-body-pad">
+            <div class="card-body">
+              <p>AI models <em>hallucinate</em> — they generate confident, plausible, but factually incorrect content. In nuclear medicine education, this has real stakes for student competency.</p>
+              <div class="divider"></div>
+              <ul>
+                <li>Always verify AI-generated study materials against primary textbooks</li>
+                <li>Teach students critical evaluation over passive reliance</li>
+                <li>Establish clear academic integrity policies for student AI usage</li>
+                <li>Student and patient data must never be entered into public LLMs</li>
+              </ul>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="card" style="border-style:dashed;">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="card-header-left">
+            <div class="card-tag gold" style="margin-bottom:6px;">Note</div>
+            <div class="card-title" style="font-size:13px;">Important Caution — All AI Tools</div>
+          </div>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="card-body-pad">
+            <div class="card-body" style="font-size:12px; color:#d0cee0;">No student data, clinical identifiers, or protected health information (PHI) should be uploaded to or entered into any AI tool without explicit permission and in accordance with your institutional policies, FERPA, and applicable HIPAA regulations.</div>
+          </div></div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ── SECTION 2: ANATOMY OF A PROMPT ── -->
+  <section class="section" id="s2">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Anatomy of a Prompt</h2>
+    </div>
+    <p class="section-desc reveal">Prompt engineering is the art and science of crafting precise instructions for AI models to generate desired responses. The better your prompt, the better your educational output.</p>
+
+
+    <div class="card-grid reveal">
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="card-header-left">
+            <div class="card-tag" style="margin-bottom:6px;">Definition</div>
+            <div class="card-title">Everyday Analogies</div>
+          </div>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="card-body-pad">
+            <div class="card-body">
+              <p>As an educator, you already know how to prompt — you just don't call it that:</p>
+              <ul style="margin-top:8px;">
+                <li>A well-structured grading rubric</li>
+                <li>A precisely worded lesson plan objective</li>
+                <li>A clinical competency evaluation form</li>
+                <li>Clear instructions for a student lab assignment</li>
+              </ul>
+              <p style="margin-top:10px;">Prompt engineering applies the same precision to generative AI.</p>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="card-header-left">
+            <div class="card-tag" style="margin-bottom:6px;">Framework</div>
+            <div class="card-title">The 6 Elements of an Effective Prompt</div>
+          </div>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="card-body-pad">
+            <div class="anatomy-grid">
+              <div class="anatomy-item">
+                <div class="anatomy-item-key">Role</div>
+                <div class="anatomy-item-val">Who should the AI act as? (e.g., "You are an expert NMT program director...")</div>
+              </div>
+              <div class="anatomy-item">
+                <div class="anatomy-item-key">Task</div>
+                <div class="anatomy-item-val">What specific action should it perform? Clear verbs matter. (create, summarize, draft, formulate)</div>
+              </div>
+              <div class="anatomy-item">
+                <div class="anatomy-item-key">Context</div>
+                <div class="anatomy-item-val">What background does the AI need? (student year level, certification exam focus)</div>
+              </div>
+              <div class="anatomy-item">
+                <div class="anatomy-item-key">Example</div>
+                <div class="anatomy-item-val">Optional but powerful — provide a sample of what you want (e.g., a past exam question).</div>
+              </div>
+              <div class="anatomy-item">
+                <div class="anatomy-item-key">Format</div>
+                <div class="anatomy-item-val">How should the output be structured? (bulleted study guide, multiple-choice, table)</div>
+              </div>
+              <div class="anatomy-item">
+                <div class="anatomy-item-key">Tone</div>
+                <div class="anatomy-item-val">What register? (academic/technical for syllabi, plain language for patient communication scenarios)</div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-example-card reveal">
+      <div class="prompt-example-header" onclick="toggleGeneric(this)">
+        <div class="prompt-example-title">Worked Example — Educator Context</div>
+        <span class="card-chevron">▼</span>
+      </div>
+      <div class="card-body-wrap">
+        <div class="card-body-inner">
+          <div class="prompt-example-body-pad">
+            <div class="prompt-parts">
+              <div class="prompt-part">
+                <div class="prompt-part-key">Role</div>
+                <div class="prompt-part-val">You are an experienced nuclear medicine technologist educator.</div>
+              </div>
+              <div class="prompt-part">
+                <div class="prompt-part-key">Task</div>
+                <div class="prompt-part-val">Create a concise study module about gamma camera quality control (QC).</div>
+              </div>
+              <div class="prompt-part">
+                <div class="prompt-part-key">Context</div>
+                <div class="prompt-part-val">The students are first-year technologists preparing for their initial clinical rotation. They struggle with the difference between uniformity and resolution.</div>
+              </div>
+              <div class="prompt-part">
+                <div class="prompt-part-key">Example</div>
+                <div class="prompt-part-val">For the quiz section, format questions like this: "Q: Which daily test ensures the camera sees a uniform field of radiation? A) Center of Rotation B) Uniformity Flood"</div>
+              </div>
+              <div class="prompt-part">
+                <div class="prompt-part-key">Format</div>
+                <div class="prompt-part-val">Use a structured bulleted list. Include definitions, common artifacts, daily vs. weekly QC tests, and a short 3-question quiz at the end.</div>
+              </div>
+              <div class="prompt-part">
+                <div class="prompt-part-key">Tone</div>
+                <div class="prompt-part-val">Encouraging, clear, and highly focused on practical clinical application.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── SECTION 3: PROMPT TECHNIQUES ── -->
+  <section class="section" id="s3">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Prompt Techniques</h2>
+    </div>
+    <p class="section-desc reveal">Five techniques that dramatically improve AI output quality — specifically tailored for drafting exams, writing syllabi, or building training materials.</p>
+
+    <div class="card-grid reveal">
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="card-header-left">
+            <div class="card-tag" style="margin-bottom:6px;">Technique 1</div>
+            <div class="card-title">Free Text Prompting</div>
+          </div>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="card-body-pad">
+            <div class="card-body">
+              <p>The foundation — available in every AI platform. Apply the 6-element anatomy and iterate.</p>
+              <ul style="margin-top:10px;">
+                <li>Refine your prompt based on each output to narrow the focus</li>
+                <li>Start a new chat if the context becomes confused</li>
+                <li>Critique outputs and explicitly ask the AI to "try again and fix X"</li>
+                <li>Use "forget history" where supported</li>
+              </ul>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="card-header-left">
+            <div class="card-tag" style="margin-bottom:6px;">Technique 2</div>
+            <div class="card-title">Role-Playing Prompts</div>
+          </div>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="card-body-pad">
+            <div class="card-body">
+              <p>Assign the AI a specific expert persona to improve accuracy and calibrate tone for your student audience.</p>
+              <div style="background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px; margin-top:10px; font-size:12.5px; color:var(--text-muted); font-style:italic;">
+                "You are an NMT program director reviewing an accreditation self-study document. Identify gaps relative to current JRCNMT standards..."
+              </div>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="card-header-left">
+            <div class="card-tag" style="margin-bottom:6px;">Technique 3</div>
+            <div class="card-title">Chain-of-Thought Prompting</div>
+          </div>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="card-body-pad">
+            <div class="card-body">
+              <p>Force the AI to reason step-by-step before reaching a conclusion. Critical for generating complex physics explanations or grading rubrics.</p>
+              <ul style="margin-top:10px;">
+                <li>Ask AI to "explain your reasoning step-by-step"</li>
+                <li>Define each reasoning step explicitly for student feedback</li>
+                <li>Example: walking through complex radiopharmacy calculations</li>
+              </ul>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="card-header-left">
+            <div class="card-tag" style="margin-bottom:6px;">Technique 4</div>
+            <div class="card-title">Retrieval-Augmented Generation (RAG)</div>
+          </div>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="card-body-pad">
+            <div class="card-body">
+              <p>Ground AI output in <em>your</em> documents — not just its training data. Upload a syllabus or textbook chapter and prompt against it.</p>
+              <ul style="margin-top:10px;">
+                <li>Upload your specific program guidelines or lecture notes</li>
+                <li>Generate study guides, summaries, or NMTCB-style Q&amp;A grounded in the source</li>
+                <li>Every claim is traceable back to your uploaded document</li>
+              </ul>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="card-header-left">
+            <div class="card-tag" style="margin-bottom:6px;">Technique 5</div>
+            <div class="card-title">Custom AI Tools (GPTs &amp; Gems)</div>
+          </div>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="card-body-pad">
+            <div class="card-body">
+              <p>Build or use pre-configured AI assistants trained on specific instructions — no prompting from scratch each time.</p>
+              <ul style="margin-top:10px;">
+                <li>Custom GPTs (ChatGPT) and Gems (Gemini) save reusable system prompts</li>
+                <li>Build a "Student Recommendation Letter Writer" or "Exam Question Generator"</li>
+                <li>Share within your program faculty for consistent outputs</li>
+                <li>No coding required — configure via natural language</li>
+              </ul>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── SECTION 4: WORKSHOP ── -->
+  <section class="section" id="s4">
+    <div class="section-header reveal">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Workshop: Do &amp; Discuss</h2>
+    </div>
+    <p class="section-desc reveal">
+      Four hands-on educator exercises. Copy the prompt, paste it into your AI platform of choice, and compare results with your peers.
+      Use the AI links to open a platform directly.
+    </p>
+
+
+    <div style="display:flex; flex-direction:column; gap:16px;">
+
+<!-- Exercise 1 -->
+<div class="workshop-card reveal">
+  <div class="workshop-header" onclick="toggleGeneric(this)">
+    <span class="workshop-num">Ex 01</span>
+    <div style="flex:1;">
+      <div class="workshop-title">Syllabus Module — Radiopharmacy (Mo-99/Tc-99m Generator)</div>
+    </div>
+    <span class="card-chevron" style="margin-left:10px;">▼</span>
+  </div>
+  <div class="card-body-wrap">
+    <div class="card-body-inner"><div class="workshop-body-pad">
+      <div class="workshop-desc">
+        Practice <strong>role-playing + free text prompting</strong> to create a study module for your students focusing on the Mo-99/Tc-99m generator. You will specify the required learning points (elution process, transient equilibrium, QC checks) to build an engaging handout.
+      </div>
+      <div class="workshop-meta">
+        <span class="wm-pill"><span class="dot"></span> <span style="color:var(--gold);margin-right:3px;font-weight:600;">Prompt Type:</span> Role-Playing + Free Text</span>
+        <span class="wm-pill"><span class="dot"></span> <span style="color:var(--gold);margin-right:3px;font-weight:600;">Domain:</span> Didactic</span>
+      </div>
+      <div class="workshop-footer">
+        <button class="btn-copy" onclick="copyPrompt(this, 'ex1')"><span>⎘</span> Copy Prompt</button>
+        <a class="btn-ai" href="https://chatgpt.com" target="_blank" rel="noopener">🟢 ChatGPT</a>
+        <a class="btn-ai" href="https://claude.ai" target="_blank" rel="noopener">🟠 Claude</a>
+        <a class="btn-ai" href="https://gemini.google.com" target="_blank" rel="noopener">🔵 Gemini</a>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- Exercise 2 -->
+<div class="workshop-card reveal">
+  <div class="workshop-header" onclick="toggleGeneric(this)">
+    <span class="workshop-num">Ex 02</span>
+    <div style="flex:1;">
+      <div class="workshop-title">Chain-of-Thought: Explaining a QC Artifact</div>
+    </div>
+    <span class="card-chevron" style="margin-left:10px;">▼</span>
+  </div>
+  <div class="card-body-wrap">
+    <div class="card-body-inner"><div class="workshop-body-pad">
+      <div class="workshop-desc">
+        A student brings you a daily flood image showing a distinct "bullseye" artifact on a SPECT camera. Practice <strong>chain-of-thought prompting</strong> to force the AI to build a structured, step-by-step Socratic dialogue that helps the student deduce the cause (e.g., cracked crystal vs. PMT failure vs. off-peak).
+      </div>
+      <div class="workshop-meta">
+        <span class="wm-pill"><span class="dot"></span> <span style="color:var(--gold);margin-right:3px;font-weight:600;">Prompt Type:</span> Chain-of-Thought</span>
+        <span class="wm-pill"><span class="dot"></span> <span style="color:var(--gold);margin-right:3px;font-weight:600;">Domain:</span> Clinical Training</span>
+      </div>
+      <div class="workshop-footer">
+        <button class="btn-copy" onclick="copyPrompt(this, 'ex2')"><span>⎘</span> Copy Prompt</button>
+        <a class="btn-ai" href="https://chatgpt.com" target="_blank" rel="noopener">🟢 ChatGPT</a>
+        <a class="btn-ai" href="https://claude.ai" target="_blank" rel="noopener">🟠 Claude</a>
+        <a class="btn-ai" href="https://gemini.google.com" target="_blank" rel="noopener">🔵 Gemini</a>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- Exercise 3 -->
+<div class="workshop-card reveal">
+  <div class="workshop-header" onclick="toggleGeneric(this)">
+    <span class="workshop-num">Ex 03</span>
+    <div style="flex:1;">
+      <div class="workshop-title">RAG: Build a Technologist Certification Review</div>
+    </div>
+    <span class="card-chevron" style="margin-left:10px;">▼</span>
+  </div>
+  <div class="card-body-wrap">
+    <div class="card-body-inner"><div class="workshop-body-pad">
+      <div class="workshop-desc">
+        Use <strong>Retrieval-Augmented Generation (RAG)</strong> with NotebookLM. Upload a lecture PDF or SNMMI guideline, then use the prompt below to generate a structured NMTCB/ARRT style study guide grounded in that specific source — ensuring source-verified content for your students.
+      </div>
+      <div class="workshop-meta">
+        <span class="wm-pill"><span class="dot"></span> <span style="color:var(--gold);margin-right:3px;font-weight:600;">Prompt Type:</span> RAG</span>
+        <span class="wm-pill"><span class="dot"></span> <span style="color:var(--gold);margin-right:3px;font-weight:600;">Domain:</span> Didactic</span>
+      </div>
+      <div class="workshop-footer">
+        <button class="btn-copy" onclick="copyPrompt(this, 'ex3')"><span>⎘</span> Copy Prompt</button>
+        <a class="btn-ai" href="https://link.springer.com/article/10.1007/s00259-023-06255-8" target="_blank" rel="noopener" style="color:var(--teal);background:var(--teal-dim);border-color:rgba(45,212,191,0.25);">📄 Sample Document</a>
+        <a class="btn-ai" href="https://notebooklm.google.com" target="_blank" rel="noopener">📓 NotebookLM</a>
+        <a class="btn-ai" href="https://chatgpt.com" target="_blank" rel="noopener">🟢 ChatGPT</a>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- Exercise 4 -->
+<div class="workshop-card reveal">
+  <div class="workshop-header" onclick="toggleGeneric(this)">
+    <span class="workshop-num">Ex 04</span>
+    <div style="flex:1;">
+      <div class="workshop-title">Custom AI Tool: Student Recommendation Letter Writer</div>
+    </div>
+    <span class="card-chevron" style="margin-left:10px;">▼</span>
+  </div>
+  <div class="card-body-wrap">
+    <div class="card-body-inner"><div class="workshop-body-pad">
+      <div class="workshop-desc">
+        Build a <strong>custom GPT or Gem</strong> that drafts tailored letters of recommendation for your graduating NMT students. The tool accepts a job description, the student's clinical performance summary, and a synthetic CV — then generates a polished, specific letter.
+      </div>
+      <div class="workshop-meta">
+        <span class="wm-pill"><span class="dot"></span> <span style="color:var(--gold);margin-right:3px;font-weight:600;">Prompt Type:</span> Custom AI Tool</span>
+        <span class="wm-pill"><span class="dot"></span> <span style="color:var(--gold);margin-right:3px;font-weight:600;">Domain:</span> Program Management</span>
+      </div>
+      <div style="background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px 20px; font-size:12.5px; color:var(--text-muted); line-height:1.65; margin-bottom:16px;">
+        <div style="font-family:var(--font); font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:10px;">How to set it up</div>
+        <ol style="list-style:decimal; padding-left:18px; display:flex; flex-direction:column; gap:6px;">
+          <li>Open ChatGPT → <em>Explore GPTs</em> → <em>Create</em>, or Gemini → <em>Gems</em> → <em>New Gem</em></li>
+          <li>Paste the system prompt below into the instructions field</li>
+          <li>Save and name it <em>"Student Rec Letter Writer"</em></li>
+          <li>When using: paste in (1) the hospital/clinic applying to, (2) student's key traits, and (3) a CV — use the sample CV below to try it now</li>
+          <li>The tool outputs a full draft letter — review, edit, and sign</li>
+        </ol>
+      </div>
+      <div class="workshop-footer">
+        <button class="btn-copy" onclick="copyPrompt(this, 'ex4')"><span>⎘</span> Copy System Prompt</button>
+        <button class="btn-copy" onclick="copyPrompt(this, 'ex4cv')" style="background:var(--teal-dim);color:var(--teal);border-color:rgba(45,212,191,0.25);"><span>⎘</span> Copy Sample CV</button>
+        <a class="btn-ai" href="https://chatgpt.com/gpts/editor" target="_blank" rel="noopener">🟢 Build in ChatGPT</a>
+        <a class="btn-ai" href="https://gemini.google.com/gems/create" target="_blank" rel="noopener">🔵 Build in Gemini</a>
+      </div>
+    </div></div>
+  </div>
+</div>
+</div>
+
+</div>
+</section>
+
+  <!-- ── SECTION 5: AI TOOLS ── -->
+  <section class="section" id="s5">
+    <div class="section-header reveal">
+      <span class="section-num">05</span>
+      <h2 class="section-title">AI Tool Ecosystem: Go Play!</h2>
+    </div>
+    <p class="section-desc reveal">The tools available today span language models, evidence-based research, artifact generation, and image/video synthesis. A curated starting point for nuclear medicine educators.</p>
+
+
+    <div style="display:flex; flex-direction:column; gap:12px;">
+
+      <!-- LLMs -->
+      <div class="tool-group-card reveal">
+        <div class="tool-group-header" onclick="toggleGeneric(this)">
+          <span class="tool-group-label">AI Language Models</span>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="tool-group-body">
+            <div class="card-grid card-grid-3">
+              <a class="tool-card" href="https://chatgpt.com" target="_blank" rel="noopener">
+                <div class="tool-icon green">🟢</div>
+                <div><div class="tool-name">ChatGPT</div><div class="tool-desc">OpenAI · Versatile, widely used, strong general reasoning. GPT-4o recommended for curriculum drafting.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+              <a class="tool-card" href="https://claude.ai" target="_blank" rel="noopener">
+                <div class="tool-icon orange">🟠</div>
+                <div><div class="tool-name">Claude</div><div class="tool-desc">Anthropic · Exceptional for long documents, nuanced reasoning, and academic writing.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+              <a class="tool-card" href="https://gemini.google.com" target="_blank" rel="noopener">
+                <div class="tool-icon blue">🔵</div>
+                <div><div class="tool-name">Gemini</div><div class="tool-desc">Google · Integrates natively with NotebookLM, Docs, and Drive for seamless syllabus creation.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+              <a class="tool-card" href="https://copilot.microsoft.com" target="_blank" rel="noopener">
+                <div class="tool-icon slate">🪟</div>
+                <div><div class="tool-name">Copilot</div><div class="tool-desc">Microsoft · Native to Office 365. Best for PowerPoint lecture creation, Word, and Outlook workflows.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- Research -->
+      <div class="tool-group-card reveal">
+        <div class="tool-group-header" onclick="toggleGeneric(this)">
+          <span class="tool-group-label">Evidence-Based Research Tools</span>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="tool-group-body">
+            <div class="card-grid card-grid-3">
+              <a class="tool-card" href="https://www.openevidence.com" target="_blank" rel="noopener">
+                <div class="tool-icon teal">⚕️</div>
+                <div><div class="tool-name">OpenEvidence</div><div class="tool-desc">Clinical-grade AI answers grounded in peer-reviewed medical literature with citations.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+              <a class="tool-card" href="https://www.perplexity.ai" target="_blank" rel="noopener">
+                <div class="tool-icon purple">🔍</div>
+                <div><div class="tool-name">Perplexity</div><div class="tool-desc">AI search with real-time web citations. Useful for finding current guidelines and protocols.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+              <a class="tool-card" href="https://consensus.app" target="_blank" rel="noopener">
+                <div class="tool-icon blue">📊</div>
+                <div><div class="tool-name">Consensus</div><div class="tool-desc">AI-powered research synthesis. Summarizes findings across multiple studies for advanced assignments.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+              <a class="tool-card" href="https://pubmed.ncbi.nlm.nih.gov" target="_blank" rel="noopener">
+                <div class="tool-icon slate">📚</div>
+                <div><div class="tool-name">PubMed</div><div class="tool-desc">NLM gold standard. Use alongside AI tools to verify sources and access full text.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- Artifact -->
+      <div class="tool-group-card reveal">
+        <div class="tool-group-header" onclick="toggleGeneric(this)">
+          <span class="tool-group-label">Grounded Artifact Generation</span>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="tool-group-body">
+            <div class="card-grid card-grid-3">
+              <a class="tool-card" href="https://notebooklm.google.com" target="_blank" rel="noopener">
+                <div class="tool-icon amber">📓</div>
+                <div><div class="tool-name">NotebookLM</div><div class="tool-desc">Upload your syllabi → generate study guides, audio summaries, quizzes, slide outlines — all traceable.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- Image/Video -->
+      <div class="tool-group-card reveal">
+        <div class="tool-group-header" onclick="toggleGeneric(this)">
+          <span class="tool-group-label">Image &amp; Video AI Tools</span>
+          <span class="card-chevron">▼</span>
+        </div>
+        <div class="card-body-wrap">
+          <div class="card-body-inner"><div class="tool-group-body">
+            <div class="card-grid card-grid-3">
+              <a class="tool-card" href="https://deepmind.google/technologies/veo/" target="_blank" rel="noopener">
+                <div class="tool-icon blue">🎥</div>
+                <div><div class="tool-name">Google Veo</div><div class="tool-desc">Google · State-of-the-art generative video model. Excellent for creating high-fidelity clinical simulation videos.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+              <a class="tool-card" href="https://deepmind.google/technologies/imagen-3/" target="_blank" rel="noopener">
+                <div class="tool-icon amber">🖼️</div>
+                <div><div class="tool-name">Google Imagen</div><div class="tool-desc">Google · Advanced text-to-image model. Useful for generating precise anatomical and educational diagrams.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+              <a class="tool-card" href="https://klingai.com" target="_blank" rel="noopener">
+                <div class="tool-icon rose">🎬</div>
+                <div><div class="tool-name">Kling AI</div><div class="tool-desc">Kuaishou · Advanced video generation model capable of highly realistic physical simulations and complex motion for educational videos.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+              <a class="tool-card" href="https://dream-machine.lumalabs.ai/" target="_blank" rel="noopener">
+                <div class="tool-icon slate">🚀</div>
+                <div><div class="tool-name">Luma Dream Machine</div><div class="tool-desc">Luma Labs · Fast, high-quality text-to-video. Excellent for transforming medical illustrations into dynamic animations.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+              <a class="tool-card" href="https://openai.com/dall-e-3" target="_blank" rel="noopener">
+                <div class="tool-icon orange">🎨</div>
+                <div><div class="tool-name">DALL-E 3</div><div class="tool-desc">OpenAI · Text-to-image. Useful for generating educational illustrations, slide visuals, and anatomical diagrams.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+              <a class="tool-card" href="https://runwayml.com" target="_blank" rel="noopener">
+                <div class="tool-icon purple">🎞️</div>
+                <div><div class="tool-name">Runway ML</div><div class="tool-desc">Advanced video generation and editing. Useful for creating dynamic clinical simulation visuals.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+              <a class="tool-card" href="https://www.midjourney.com" target="_blank" rel="noopener">
+                <div class="tool-icon teal">🖼️</div>
+                <div><div class="tool-name">Midjourney</div><div class="tool-desc">High-quality image generation. Excellent for high-fidelity presentation visuals and complex illustrations.</div></div>
+                <span class="tool-arrow">↗</span>
+              </a>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ── COURSE INVITE ── -->
+  <section class="section" id="course" style="background: linear-gradient(135deg, rgba(212,168,67,0.05) 0%, transparent 60%);">
+    <div class="section-header reveal">
+      <span class="section-num" style="background:rgba(45,212,191,0.12); color:var(--teal); border-color:rgba(45,212,191,0.2);">↗</span>
+      <h2 class="section-title">Continue Learning — Join the Course</h2>
+    </div>
+    <p class="section-desc reveal">Today's session is part of a larger free curriculum. The synchronous cohort has concluded, but the course remains open for asynchronous credit. Ask Mary Beth if its any good. 😊</p>
+
+    <div class="tool-group-card reveal">
+      <div class="tool-group-header" onclick="toggleGeneric(this)">
+        <div style="display:flex; align-items:center; gap:12px; flex:1;">
+          <!-- Diploma SVG icon -->
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+            <rect x="2" y="5" width="24" height="16" rx="2" fill="rgba(45,212,191,0.12)" stroke="#2dd4bf" stroke-width="1.2"/>
+            <line x1="7" y1="10" x2="21" y2="10" stroke="#2dd4bf" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+            <line x1="7" y1="13" x2="21" y2="13" stroke="#2dd4bf" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+            <line x1="7" y1="16" x2="15" y2="16" stroke="#2dd4bf" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+            <circle cx="21" cy="20" r="4" fill="rgba(45,212,191,0.15)" stroke="#2dd4bf" stroke-width="1.2"/>
+            <path d="M19 20.5 L20.5 22 L23 19.5" stroke="#2dd4bf" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 24 L21 22.5 L24 24 L23.5 27 L21 26 L18.5 27 Z" fill="rgba(45,212,191,0.2)" stroke="#2dd4bf" stroke-width="0.8"/>
+          </svg>
+          <div>
+            <div style="font-family:var(--font); font-size:13px; font-weight:600; color:var(--text);">Fundamentals of AI in Radiology with Capstone</div>
+            <div style="font-size:11px; color:var(--teal); margin-top:2px;">Free · CE Credit · Digital Badge · Open to all</div>
+          </div>
+        </div>
+        <span class="card-chevron">▼</span>
+      </div>
+      <div class="card-body-wrap">
+        <div class="card-body-inner">
+          <div class="course-invite-inner" style="border-top:1px solid var(--border);">
+            <div class="course-invite-left">
+              <div class="course-invite-badge">Free · CE Credit · Digital Badge</div>
+              <div class="course-invite-title">Fundamentals of AI in Radiology with Capstone</div>
+              <div class="course-invite-desc">
+                A nine-session curriculum covering AI foundations, prompt engineering, simulation, practical workflows, image &amp; video tools, evaluation frameworks, and frontiers in research — concluding with a capstone presentation. Open to <strong>educators, students, residents, fellows, technologists, and informatics professionals</strong> at all levels.
+              </div>
+              <div class="course-completion">
+                <div class="course-completion-title">To earn your certificate &amp; digital badge:</div>
+                <ul class="course-completion-list">
+                  <li>Complete pre- and post-course surveys</li>
+                  <li>Attend all sessions asynchronously</li>
+                  <li>Complete the AI simulation assignment</li>
+                  <li>Submit and present a capstone project</li>
+                </ul>
+              </div>
+            </div>
+            <div class="course-invite-right">
+              <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:16px; padding: 8px 0;">
+                <div style="font-family:var(--font); font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); text-align:center;">Register &amp; Enroll</div>
+                <div class="qr-box" style="border-color:rgba(45,212,191,0.3);">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=2dd4bf&bgcolor=141420&data=https://docs.google.com/forms/d/e/1FAIpQLSfLK40v3ENAkXfO0bqGBc4lu5Y5Gdcj0Jp85eOd_x0npfOhQg/viewform" alt="QR code to pre-course survey registration" style="width:140px;height:140px;" />
+                  <span class="qr-label" style="color:var(--teal);">Pre-Course Survey</span>
+                </div>
+                <div style="font-size:12px; color:var(--text-muted); text-align:center; line-height:1.6; max-width:180px;">
+                  Scan to complete the pre-course survey and begin earning credit asynchronously.
+                </div>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfLK40v3ENAkXfO0bqGBc4lu5Y5Gdcj0Jp85eOd_x0npfOhQg/viewform" target="_blank" rel="noopener"
+                  style="display:inline-flex; align-items:center; gap:7px; font-family:var(--font); font-size:12px; font-weight:600; color:var(--teal); background:var(--teal-dim); border:1px solid rgba(45,212,191,0.25); border-radius:8px; padding:8px 18px; text-decoration:none; transition:all 0.15s;"
+                  onmouseover="this.style.background='rgba(45,212,191,0.2)'" onmouseout="this.style.background='var(--teal-dim)'">
+                  Open Survey ↗
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer id="footer">
+    <div class="footer-disclaimers">
+      <div class="disclaimer-block">
+        <div class="disclaimer-title">Opinions &amp; Assertions</div>
+        <div class="disclaimer-text">The opinions and assertions expressed herein are those of the author and do not necessarily reflect the official policy or position of the Uniformed Services University of the Health Sciences, the Department of the Army, Navy, or the Air Force, or the Department of Defense.</div>
+      </div>
+      <div class="disclaimer-block">
+        <div class="disclaimer-title">AI Tool Descriptions</div>
+        <div class="disclaimer-text">Descriptions of AI tools and applications do not imply endorsement. All tools should be evaluated by the educator for appropriateness in their didactic or clinical training context prior to use.</div>
+      </div>
+      <div class="disclaimer-block">
+        <div class="disclaimer-title">Conflicts of Interest</div>
+        <div class="disclaimer-text">The author has no conflicts of interest to report.</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-credit">
+        &copy; 2026 Pavonine Spectra PLLC · SNMMI Annual Meeting 2026 ·
+        <a href="https://www.linkedin.com/in/jpeacock/" target="_blank" rel="noopener">Lt Col Justin G. Peacock, MD, PhD, MHPE ↗</a>
+      </div>
+
+    </div>
+  </footer>
+
+</main>
+
+<!-- Hidden prompt text -->
+<textarea id="ex1" style="display:none;">You are an expert Nuclear Medicine Technologist Program Director and Educator.
+
+Create a high-yield study module handout for first-year technologist students focusing on the Mo-99/Tc-99m Generator.
+
+The students are preparing for their first radiopharmacy clinical rotation. They need to understand the practical aspects, not just the physics equations.
+
+Structure the handout as follows:
+1. What is a Mo-99/Tc-99m Generator? (2-3 sentences explaining its purpose in a clinical radiopharmacy)
+2. How does it work? (Briefly explain transient equilibrium and parent/daughter half-lives in plain terms)
+3. The Elution Process (A 4-step bulleted guide on how the generator is "milked")
+4. Quality Control Limits (Must know for the boards! Provide the limits for Molybdenum Breakthrough, Alumina Breakthrough, and Radiochemical Purity)
+5. Clinical Pearl (One major practical tip about working with generators in the hot lab)
+
+Use an encouraging, clear tone. Write at an undergraduate health-sciences reading level. Use short paragraphs, bullet points, and simple headers. Ensure all numbers (limits, half-lives) are clearly bolded.</textarea>
+
+<textarea id="ex2" style="display:none;">You are an experienced clinical preceptor in Nuclear Medicine. The current AI model tends to give students the answer immediately, which bypasses critical thinking.
+
+Your mission: write a chain-of-thought prompt that forces the AI to construct a step-by-step Socratic dialogue to help a student deduce the cause of a QC failure.
+
+CASE:
+A student presents you with today's extrinsic flood image from a dual-head SPECT camera. It shows a distinct "bullseye" (concentric ring) artifact.
+
+Your prompt must:
+1. Instruct the AI to act as a preceptor asking the student guiding questions.
+2. Define 4 specific reasoning steps the AI must walk the student through:
+   Step 1: Identify the visual characteristic of the artifact.
+   Step 2: Differentiate if it's an intrinsic or extrinsic issue based on how the flood was acquired.
+   Step 3: Analyze potential causes (e.g., cracked crystal, PMT failure, wrong collimator, off-peak, wrong matrix size).
+   Step 4: Conclude with the corrective action the student should take.
+3. The AI must wait for the student's response after asking each question before proceeding to the next step.
+
+Write the full chain-of-thought prompt now.</textarea>
+
+<textarea id="ex3" style="display:none;">You are an expert Nuclear Medicine Technologist Educator specializing in NMTCB and ARRT board review. Using ONLY the sources uploaded to this notebook, generate a comprehensive certification review study guide on the topic covered in the document.
+
+Structure your output as follows:
+
+SECTION 1 — HIGH-YIELD BOARD CONCEPTS (10–15 bullet points)
+- The absolute most important facts from the source
+- Focus heavily on instrumentation, radiopharmacy, patient care, or procedures as they relate to technologist certification exams
+
+SECTION 2 — CLINICAL TRAPS & PITFALLS (5–8 items)
+- Practical take-home points that distinguish a competent technologist
+- Include common positioning errors, artifact recognitions, or contraindications mentioned in the source
+
+SECTION 3 — PRACTICE EXAM QUESTIONS (5 questions)
+- Write 5 multiple-choice questions (A–D format) based strictly on the uploaded source, matching the style of the NMTCB
+- Include the correct answer and a 2–3 sentence explanation for each
+
+SECTION 4 — SCOPE LIMITATIONS
+- Note any areas the source identifies that are generally outside the scope of a technologist (e.g., final interpretation) or that require referring back to the interpreting physician.
+
+Ground every item in the uploaded source. If a section cannot be completed from the source alone, note: "Not addressed in uploaded source — verify externally."</textarea>
+
+<textarea id="ex4" style="display:none;">You are an expert letter of recommendation writer acting on behalf of a Nuclear Medicine Technology Program Director. Your job is to draft polished, specific, and compelling letters of recommendation for graduating NMT students.
+
+When the user provides the following three inputs, generate a complete letter of recommendation draft:
+
+INPUT 1 — POSITION BEING SOUGHT
+The hospital/clinic applying to, the specific role (e.g., Staff Technologist, PET/CT Technologist), and a brief description of what the role involves.
+
+INPUT 2 — APPLICANT'S CLINICAL PERFORMANCE
+The student's key traits, total clinical hours completed, and their strongest modality/skill (e.g., exceptional patient care, highly proficient in IV starts, mastered cardiac SPECT).
+
+INPUT 3 — CV SUMMARY
+A synthetic or de-identified summary of the student's background: graduation date, GPA, clinical rotation sites, technical skills, and any awards or leadership.
+
+---
+
+LETTER FORMAT:
+- Open with your title (Program Director) and enthusiastic endorsement of the student.
+- Paragraph 1: Clinical competence — cite 2–3 specific examples of their technical skills and rotation performance from the inputs.
+- Paragraph 2: Patient care and professionalism — highlight their bedside manner, teamwork, and reliability.
+- Paragraph 3: Adaptability and growth — mention how they handle feedback or complex/busy clinical environments.
+- Closing paragraph: Unequivocal recommendation for the specific role, your contact information offer.
+- Sign off as "Sincerely, [Your Name], Program Director, [Institution Name]" with placeholders.
+
+TONE: Professional, enthusiastic, specific. Avoid generic praise. Every sentence should connect to a concrete example from the inputs.
+LENGTH: 4–5 paragraphs, approximately 400–500 words.
+
+Wait for the user to provide all three inputs before drafting. If any input is missing, ask for it before proceeding.</textarea>
+
+<textarea id="ex4cv" style="display:none;">SAMPLE NMT STUDENT CV SUMMARY — FOR PRACTICE USE ONLY (synthetic, not a real person)
+
+NAME: Jordan T. Ellis
+CURRENT ROLE: Senior Nuclear Medicine Technology Student
+PROGRAM: College of Health Sciences NMT Program (fictional)
+EXPECTED GRADUATION: May 2026
+GPA: 3.85 / 4.0
+
+CLINICAL ROTATIONS (1,200+ Hours Completed)
+- University Hospital (Large Academic Center - 600 hours): Gained extensive experience in high-volume PET/CT oncology, inpatient cardiac SPECT, and assisting with Lu-177 therapies. Praised for exceptional IV placement skills.
+- Community General Hospital (Outpatient - 400 hours): Focused on routine bone scans, HIDA scans, and outpatient stress tests. Managed independent camera setups and daily QC protocols.
+- Pediatric Specialty Clinic (200 hours): Developed specialized skills in pediatric patient communication, immobilization techniques, and weight-based dose calculations.
+
+TECHNICAL SKILLS
+- Modalities: PET/CT, SPECT/CT, Planar Imaging
+- Equipment: Siemens Symbia, GE Discovery, Capintec Dose Calibrators
+- Procedures: Proficient in radiopharmaceutical preparation, daily hot lab QC (constancy, linearity), and handling radioactive spills.
+- Patient Care: CPR/BLS certified, 100+ successful IV starts, excellent patient education skills.
+
+LEADERSHIP & SERVICE
+- Class President, NMT Student Association (2025-2026)
+- Peer Tutor for first-year students in Radiation Physics and Instrumentation
+- Volunteer, Regional Health Fair - Radiation Safety Awareness Booth
+
+AWARDS & RECOGNITION
+- Clinical Excellence Award, Spring 2025 (Recognized by clinical preceptors for outstanding teamwork and patient empathy)
+- Dean's List (All semesters)
+
+PERSONAL STATEMENT HIGHLIGHT
+Jordan is seeking a Staff Nuclear Medicine Technologist position at a dynamic hospital where they can utilize their strong foundation in PET/CT and patient care. They are known for remaining calm under pressure, adapting quickly to new camera software, and always prioritizing patient safety and comfort.</textarea>
+
+<script>
+const prompts = { ex1: null, ex2: null, ex3: null };
+
+function toggleCard(header) {
+  const card = header.closest('.card');
+  if (card) card.classList.toggle('open');
+}
+
+function toggleCME(header) {
+  const banner = header.closest('.cme-banner');
+  if (banner) banner.classList.toggle('open');
+}
+
+function toggleGeneric(header) {
+  const container = header.closest('.workshop-card, .prompt-example-card, .tool-group-card, .card');
+  if (container) container.classList.toggle('open');
+}
+
+function copyPrompt(btn, id) {
+  const ta = document.getElementById(id);
+  if (!ta) return;
+  const text = ta.value.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<span>✓</span> Copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = orig;
+    }, 2000);
+  }).catch(() => {
+    const ta2 = document.createElement('textarea');
+    ta2.value = text;
+    ta2.style.position = 'fixed'; ta2.style.opacity = '0';
+    document.body.appendChild(ta2);
+    ta2.select(); document.execCommand('copy');
+    document.body.removeChild(ta2);
+    btn.classList.add('copied');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<span>✓</span> Copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = orig;
+    }, 2000);
+  });
+}
+
+function navTo(e, id) {
+  if (e) e.preventDefault();
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    history.pushState(null, '', '#' + id);
+  }
+  if (window.innerWidth <= 900) closeSidebar();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
+// Active nav highlight via scroll position
+const sections = ['hero','s1','s2','s3','s4','s5','footer'];
+const links = document.querySelectorAll('.sb-link');
+
+function setActiveLink(id) {
+  links.forEach(l => {
+    const href = l.getAttribute('href');
+    l.classList.toggle('active', href === '#' + id);
+  });
+}
+
+window.addEventListener('scroll', () => {
+  let currentId = 'hero';
+  const scrollY = window.scrollY;
+  
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      const sectionTop = el.offsetTop;
+      // Trigger when the section reaches the top 200px of the viewport
+      if (scrollY >= sectionTop - 200) {
+        currentId = id;
+      }
+    }
+  });
+  
+  // Ensure footer highlights if scrolled to the absolute bottom
+  if ((window.innerHeight + Math.round(window.scrollY)) >= document.body.offsetHeight - 50) {
+    currentId = 'footer';
+  }
+  
+  setActiveLink(currentId);
+}, { passive: true });
+
+// Initial highlight on load
+setTimeout(() => window.dispatchEvent(new Event('scroll')), 100);
+
+// Scroll to hash on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const hash = window.location.hash.replace('#','');
+  if (hash) {
+    const el = document.getElementById(hash);
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
+});
+
+// Scroll reveal
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+</script>
+</body>
+</html>
